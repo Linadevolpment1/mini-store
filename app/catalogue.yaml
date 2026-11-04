@@ -1,0 +1,31 @@
+# Starting catalogue, loaded into the database the first time the app runs
+products:
+  - name: Smartphone X12
+    description: 6.5-inch screen, 128 GB storage
+    price: 1899
+    stock: 25
+  - name: Wireless Earbuds Pro
+    description: Noise cancelling, 24-hour battery with case
+    price: 449
+    stock: 60
+  - name: Laptop Air 14
+    description: 14-inch, 16 GB RAM, 512 GB SSD
+    price: 3999
+    stock: 10
+  - name: Smartwatch S3
+    description: Heart rate, GPS, 5-day battery
+    price: 799
+    stock: 30
+  - name: USB-C Fast Charger 65W
+    description: Charges phones and laptops
+    price: 129
+    stock: 100
+  - name: Phone Case Clear
+    description: Fits Smartphone X12
+    price: 59
+    stock: 200
+
+promo_codes:
+  - code: WELCOME10
+    percent_off: 10
+    expires: 2027-12-31

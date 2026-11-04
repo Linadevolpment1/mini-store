@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini Store</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; color: #1c2430; }
+    header { background: #1e2326; color: #fff; padding: .8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem; }
+    header a { color: #fff; margin-left: 1rem; text-decoration: none; }
+    header .brand { font-weight: bold; font-size: 1.2rem; margin-left: 0; color: #7fd1c5; }
+    main { max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; }
+    .card { background: #fff; padding: 1.25rem 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.08); margin-bottom: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+    .price { font-size: 1.2rem; font-weight: bold; color: #0f766e; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: .5rem; border-bottom: 1px solid #e3e6ea; }
+    input, textarea, select { padding: .45rem; margin: .25rem 0 .75rem; box-sizing: border-box; }
+    .full { display: block; width: 100%; }
+    button { padding: .5rem 1rem; background: #0f766e; color: #fff; border: 0; border-radius: 4px; cursor: pointer; }
+    button.secondary { background: #5b6573; }
+    .flash { background: #e6f2f0; padding: .6rem 1rem; border-radius: 4px; margin-bottom: 1rem; }
+    .muted { color: #5b6573; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="{{ url_for('products') }}">Mini Store</a>
+    <nav>
+      <a href="{{ url_for('products') }}">Products</a>
+      {% if session.user_id %}
+        <a href="{{ url_for('cart') }}">Cart ({{ cart_count }})</a>
+        <a href="{{ url_for('orders') }}">My orders</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+        {% if session.role == "admin" %}<a href="{{ url_for('admin_products') }}">Admin</a>{% endif %}
+        <a href="{{ url_for('logout') }}">Sign out ({{ session.name }})</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Sign in</a>
+        <a href="{{ url_for('register') }}">Register</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>
+    {% for message in get_flashed_messages() %}<div class="flash">{{ message }}</div>{% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

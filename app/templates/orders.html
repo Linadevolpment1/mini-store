@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>My orders</h2>
+  <table>
+    <tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th></tr>
+    {% for o in orders %}
+    <tr><td><a href="{{ url_for('order_detail', order_id=o.id) }}">#{{ o.id }}</a></td><td>{{ o.created }}</td><td>{{ o.total }} {{ currency }}</td><td>{{ o.status }}</td></tr>
+    {% else %}
+    <tr><td colspan="4">You have no orders yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

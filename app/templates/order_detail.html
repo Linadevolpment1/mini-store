@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Order #{{ order.id }}</h2>
+  <p>Placed on {{ order.created }} · Status: <strong>{{ order.status }}</strong></p>
+  <table>
+    <tr><th>Product</th><th>Price</th><th>Quantity</th></tr>
+    {% for i in items %}<tr><td>{{ i.name }}</td><td>{{ i.price }} {{ currency }}</td><td>{{ i.quantity }}</td></tr>{% endfor %}
+    <tr><th colspan="2">Total paid{% if order.promo_code %} (promo {{ order.promo_code }}){% endif %}</th><th>{{ order.total }} {{ currency }}</th></tr>
+  </table>
+  <h3>Delivery</h3>
+  <p>{{ order.ship_name }}<br>{{ order.ship_phone }}<br>{{ order.ship_address }}</p>
+  <p><a href="{{ url_for('orders') }}">Back to my orders</a></p>
+</div>
+{% endblock %}

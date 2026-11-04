@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Admin: products</h2>
+  <p><a href="{{ url_for('admin_orders') }}">Go to orders and audit log</a></p>
+  <table>
+    <tr><th>Product</th><th>Price ({{ currency }})</th><th>Stock</th><th></th></tr>
+    {% for p in products %}
+    <tr>
+      <td>{{ p.name }}</td>
+      <td colspan="3">
+        <form method="post" style="display: flex; gap: .5rem; align-items: center;">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+          <input type="hidden" name="product_id" value="{{ p.id }}">
+          <input name="price" value="{{ p.price }}" style="width: 6rem;">
+          <input name="stock" value="{{ p.stock }}" style="width: 5rem;">
+          <button type="submit">Save</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width: 360px; margin: 0 auto;">
+  <form method="post">
+    <h2>Sign in</h2>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <label>Email <input class="full" name="email" type="email" autocomplete="username"></label>
+    <label>Password <input class="full" name="password" type="password" autocomplete="current-password"></label>
+    <button type="submit">Sign in</button>
+    <p class="muted">New here? <a href="{{ url_for('register') }}">Create an account</a></p>
+  </form>
+</div>
+{% endblock %}

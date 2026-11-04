@@ -1,0 +1,11 @@
+# Runs Gitleaks on your laptop before every commit, so secrets are blocked
+# before they ever reach GitHub.
+# Setup (once):  install gitleaks, then:  pip install pre-commit && pre-commit install
+repos:
+  - repo: local
+    hooks:
+      - id: gitleaks
+        name: Detect hardcoded secrets (Gitleaks)
+        entry: gitleaks git --pre-commit --redact --staged --verbose
+        language: system
+        pass_filenames: false

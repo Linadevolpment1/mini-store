@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width: 420px; margin: 0 auto;">
+  <form method="post">
+    <h2>Create an account</h2>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <label>Full name <input class="full" name="name" autocomplete="name"></label>
+    <label>Email <input class="full" name="email" type="email" autocomplete="email"></label>
+    <label>Phone <input class="full" name="phone" autocomplete="tel"></label>
+    <label>Delivery address <input class="full" name="address" autocomplete="street-address"></label>
+    <label>Password (at least 8 characters) <input class="full" name="password" type="password" autocomplete="new-password"></label>
+    <button type="submit">Create account</button>
+  </form>
+</div>
+{% endblock %}

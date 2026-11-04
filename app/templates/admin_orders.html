@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Admin: orders</h2>
+  <p><a href="{{ url_for('admin_products') }}">Go to products</a></p>
+  <table>
+    <tr><th>Order</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th></tr>
+    {% for o in orders %}
+    <tr>
+      <td>#{{ o.id }}</td><td>{{ o.name }}</td><td>{{ o.created }}</td><td>{{ o.total }} {{ currency }}</td>
+      <td>
+        <form method="post" style="display: flex; gap: .5rem;">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+          <input type="hidden" name="order_id" value="{{ o.id }}">
+          <select name="status">
+            {% for s in ["Placed", "Shipped", "Delivered"] %}<option {% if s == o.status %}selected{% endif %}>{{ s }}</option>{% endfor %}
+          </select>
+          <button type="submit">Update</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h3>Audit log (latest 20)</h3>
+  <table>
+    <tr><th>When</th><th>Who</th><th>What</th></tr>
+    {% for e in log %}<tr><td>{{ e.created }}</td><td>{{ e.name }}</td><td>{{ e.action }}</td></tr>{% else %}<tr><td colspan="3">No admin actions yet.</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}
