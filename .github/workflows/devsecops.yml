@@ -51,4 +51,4 @@ jobs:
       - name: Install Semgrep
         run: pip install semgrep==1.183.0
       - name: Scan the code for security bugs
-        run: semgrep scan --config p/python --error --metrics=off
+        run: semgrep scan --config p/python --config r/python.lang.security.audit.formatted-sql-query.formatted-sql-query --error --metrics=off
