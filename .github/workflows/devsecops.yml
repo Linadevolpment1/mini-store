@@ -37,3 +37,18 @@ jobs:
         run: pip install -r requirements.txt -r requirements-dev.txt
       - name: Run the tests
         run: pytest
+
+  code-scan:
+    name: Code scan (Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Semgrep
+        run: pip install semgrep==1.183.0
+      - name: Scan the code for security bugs
+        run: semgrep scan --config p/python --error --metrics=off
