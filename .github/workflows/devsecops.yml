@@ -52,3 +52,25 @@ jobs:
         run: pip install semgrep==1.183.0
       - name: Scan the code for security bugs
         run: semgrep scan --config p/python --config r/python.lang.security.audit.formatted-sql-query.formatted-sql-query --error --metrics=off
+
+  library-scan:
+    name: Library scan + SBOM (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+      - name: Install Trivy
+        run: |
+          curl -sSL https://github.com/aquasecurity/trivy/releases/download/v0.69.3/trivy_0.69.3_Linux-64bit.tar.gz | tar -xz -C /tmp trivy
+          sudo mv /tmp/trivy /usr/local/bin/
+      - name: Create the SBOM
+        run: trivy fs --format cyclonedx --output sbom.cdx.json .
+      - name: Save the SBOM with the run
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.cdx.json
+      - name: List all vulnerable libraries
+        run: trivy fs --scanners vuln .
+      - name: Block HIGH and CRITICAL
+        run: trivy fs --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --quiet .
