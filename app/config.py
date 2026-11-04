@@ -12,3 +12,5 @@ CURRENCY = "SAR"
 # Payment provider (simulated in this demo)
 PAYMENT_API_URL = os.environ.get("PAYMENT_API_URL")
 PAYMENT_API_KEY = "sk_test_51NzQpRL8vT3kXwYb9mHc2dFgJ"
+
+IMAGES_ACCESS_KEY_ID = os.environ.get("IMAGES_ACCESS_KEY_ID")
