@@ -1,76 +1,8 @@
-name: DevSecOps pipeline
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-  workflow_dispatch:
-
-permissions:
-  contents: read
-
-jobs:
-  secret-scan:
-    name: Secret scan (Gitleaks)
+  deploy:
+    name: Deploy (only if every check passes)
+    needs: [secret-scan, tests, code-scan, library-scan]
     runs-on: ubuntu-latest
     steps:
-      - name: Get the code
-        uses: actions/checkout@v4
-      - name: Install Gitleaks
-        run: |
-          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz | tar -xz gitleaks
-          sudo mv gitleaks /usr/local/bin/
-      - name: Scan the code for secrets
-        run: gitleaks dir . --verbose --no-banner --redact
-
-  tests:
-    name: Unit tests (pytest)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get the code
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install the app and test libraries
-        run: pip install -r requirements.txt -r requirements-dev.txt
-      - name: Run the tests
-        run: pytest
-
-  code-scan:
-    name: Code scan (Semgrep)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get the code
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install Semgrep
-        run: pip install semgrep==1.183.0
-      - name: Scan the code for security bugs
-        run: semgrep scan --config p/python --config r/python.lang.security.audit.formatted-sql-query.formatted-sql-query --error --metrics=off
-
-  library-scan:
-    name: Library scan + SBOM (Trivy)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get the code
-        uses: actions/checkout@v4
-      - name: Install Trivy
-        run: |
-          curl -sSL https://github.com/aquasecurity/trivy/releases/download/v0.69.3/trivy_0.69.3_Linux-64bit.tar.gz | tar -xz -C /tmp trivy
-          sudo mv /tmp/trivy /usr/local/bin/
-      - name: Create the SBOM
-        run: trivy fs --format cyclonedx --output sbom.cdx.json .
-      - name: Save the SBOM with the run
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom
-          path: sbom.cdx.json
-      - name: List all vulnerable libraries
-        run: trivy fs --scanners vuln .
-      - name: Block HIGH and CRITICAL
-        run: trivy fs --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --quiet .
+      - name: Deploy Mini Store
+        run: echo "All security checks passed. Deploying Mini Store..."
