@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    schedule:
+    - cron: "0 1 * * *"
 
 permissions:
   contents: read
@@ -77,6 +79,7 @@ jobs:
   deploy:
     name: Deploy (only if every check passes)
     needs: [secret-scan, tests, code-scan, library-scan, image-scan]
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Mini Store
