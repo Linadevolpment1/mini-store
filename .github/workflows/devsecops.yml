@@ -76,7 +76,7 @@ jobs:
         run: trivy fs --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --quiet .
   deploy:
     name: Deploy (only if every check passes)
-    needs: [secret-scan, tests, code-scan, library-scan]
+    needs: [secret-scan, tests, code-scan, library-scan, image-scan]
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Mini Store
@@ -108,3 +108,22 @@ jobs:
         with:
           name: zap-report
           path: zap-report.html
+
+  image-scan:
+    name: Container image scan (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+      - name: Install Trivy
+        run: |
+          curl -fsSL --retry 3 https://github.com/aquasecurity/trivy/releases/download/v0.69.3/trivy_0.69.3_Linux-64bit.tar.gz | tar -xz -C /tmp trivy
+          sudo mv /tmp/trivy /usr/local/bin/
+      - name: Build the container image
+        run: docker build -t mini-store:${{ github.sha }} .
+      - name: Check the Dockerfile settings (report only)
+        run: trivy config --exit-code 0 .
+      - name: List everything vulnerable in the image (report only)
+        run: trivy image --scanners vuln mini-store:${{ github.sha }}
+      - name: Block HIGH and CRITICAL in the app libraries
+        run: trivy image --scanners vuln --pkg-types library --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 mini-store:${{ github.sha }}
