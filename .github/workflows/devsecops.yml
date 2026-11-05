@@ -81,3 +81,30 @@ jobs:
     steps:
       - name: Deploy Mini Store
         run: echo "All security checks passed. Deploying Mini Store..."
+
+  dast:
+    name: DAST (OWASP ZAP)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the app
+        run: pip install -r requirements.txt
+      - name: Start the app
+        run: |
+          flask --app app.main run --port 5000 &
+          sleep 5
+          curl -sf http://localhost:5000/health
+      - name: Attack the running app (ZAP baseline scan)
+        run: |
+          docker run --rm --network host -u root -v ${{ github.workspace }}:/zap/wrk:rw ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://localhost:5000 -r zap-report.html -I
+      - name: Save the ZAP report with the run
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: zap-report.html
