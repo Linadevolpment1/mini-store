@@ -80,7 +80,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Mini Store
-        run: echo "All security checks passed. Deploying Mini Store..."
+        env:
+          PAYMENT_API_KEY: ${{ secrets.PAYMENT_API_KEY }}
+        run: |
+          echo "All security checks passed. Deploying Mini Store..."
+          echo "Payment key received from GitHub secrets: $PAYMENT_API_KEY"
 
   dast:
     name: DAST (OWASP ZAP)
