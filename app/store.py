@@ -11,8 +11,8 @@ def list_products(conn):
 
 
 def search_products(conn, text):
-    query = f"SELECT id, name, description, price, stock FROM products WHERE name LIKE '%{text}%' ORDER BY id"
-    return conn.execute(query).fetchall()
+    query = "SELECT id, name, description, price, stock FROM products WHERE name LIKE ? ORDER BY id"
+    return conn.execute(query, (f"%{text}%",)).fetchall()
 
 
 def cart_lines(conn, cart):
